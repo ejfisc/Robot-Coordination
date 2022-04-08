@@ -6,6 +6,12 @@ import os, time, map_data
 # users dictionary - username: password
 users = {'Ethan': 'Fischer', 'user': 'pass', 'logi': 'tech', 'test': 'python'}
 
+# robots dictionary - name: (start, end)
+robots = {'r1': ('start', 'end'), 'r2': ('north', 'south'), 'r3': ('east', 'west')}
+
+# locations dictionary - name: (x, y)
+locations = {'nw': (0, 0), 'ne': (15, 0), 'se': (15, 15), 'sw': (0, 15)}
+
 # create the map
 rows, cols = (15, 15)
 robot_map = map_data.Robot_Map(rows, cols)
@@ -47,25 +53,59 @@ def command_line():
     os.system('cls||clear')
     print('COMMAND LINE')
     while True:
-        command = input('Enter your system command:\n')
-        # TODO: evaluate user commands
-        if command == 'help':
-            command_list()
-            os.system('cls||clear')
-        elif command == 'exit':
-            return
+        command = input('Enter your system command:\n').split()
+        match command[0]:
+            case 'help':
+                command_list()
+                os.system('cls||clear')
+            case 'exit':
+                return
+            case 'location':
+                if len(command) != 4:
+                    print('Invalid Command')
+                    continue
+            case 'robot':
+                if len(command) != 4:
+                    print('Invalid Command')
+                    continue
+            case 'path':
+                pass
+            case 'remove':
+                if len(command) < 2 or len(command) > 3:
+                    print('Invalid Command')
+                    continue
+                elif len(command) == 2:
+                    if command[1] in robots:
+                        robots.pop(command[1])
+                        print(f'Robot {command[1]} successfully removed.')
+                        print('\nRobots:')
+                        for k, v in robots.items():
+                            print(f'{k}: {v}')
+                        print()
+                    elif command[1] in locations:
+                        locations.pop(command[1])
+                        print(f'Location {command[1]} successfully removed.')
+                        print('\nLocations:')
+                        for k, v in locations.items():
+                            print(f'{k}: {v}')
+                        print()
+                    else:
+                        print(f'{command[1]} is not a robot or location on this map.')
+                        continue
+            case _:
+                print('Invalid Command')
 
 def command_list():
     os.system('cls||clear')
     print('SYSTEM COMMANDS\n')
-    print('location name, (x, y) - Creates a new location named with the name "name" at (x, y) on the map\n\
+    print('location name x y - Creates a new location named with the name "name" at (x, y) on the map\n\
            \t\tat the location (x, y). If the location already exists, the system does nothing. Locations\n\
            \t\tand robots cannot have the same names.\n')
     print('remove name - Removes the given robot or location, if it exists.\n')
-    print('remove (start, end) - Removes the given path, if it exists.\n')
-    print('path (start, end) - Creates a directed path from start location to end location, if both\n\
+    print('remove start end - Removes the given path, if it exists.\n')
+    print('path start end - Creates a directed path from start location to end location, if both\n\
            \t    locations exist.\n')
-    print('robot name, (start, end) - Creates a robot with the name "name" and put it on the map at start\n\
+    print('robot name start end - Creates a robot with the name "name" and put it on the map at start\n\
            \t\t   with the destination at end.\n')
     print('exit - Exits the system command line.\n')
     print('help - Prints out the command list.\n')
@@ -101,4 +141,4 @@ def main():
                 time.sleep(1)
     
        
-main()
+command_line()
