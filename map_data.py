@@ -17,4 +17,20 @@ class Robot_Map():
             map_string += '\n\n'
         return map_string
             
+    def add_path(path) -> bool:
+        pass
 
+    def add_location(location) -> bool:
+        pass
+
+    def add_robot(robot) -> bool:
+        pass
+
+    def remove_path(path) -> bool:
+        pass
+    
+    def remove_location(location) -> bool:
+        pass
+
+    def remove_robot(robot) -> bool:
+        pass

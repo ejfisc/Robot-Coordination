@@ -57,6 +57,9 @@ def command_line():
     print('COMMAND LINE')
     while True:
         command = input('Enter your system command:\n').split()
+        if len(command) == 0:
+            print('You did not enter a command, try again.')
+            continue
         match command[0]:
             case 'help':
                 command_list()
@@ -83,6 +86,8 @@ def command_line():
                         for path in paths:
                             print(f'({path[0]}, {path[1]})')
                         print()
+                    case _:
+                        print(f'\n{command[1]} is not a valid list.\n')
             case 'location':
                 if len(command) != 4:
                     print('Invalid Number of Arguments, use "help" for more info.\n')
@@ -232,4 +237,4 @@ def main():
                 print('Invalid option, try again.')
                 time.sleep(1)
     
-command_line()
+main()
