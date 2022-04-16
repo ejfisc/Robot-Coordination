@@ -15,16 +15,32 @@ class Robot_Map():
     def __init__(self, width, height) -> None:
         self.width = width
         self.height = height
-        self.data = [['*']*height]*width
+        self.data = []
+        self.fill_map()
+            
 
     def __str__(self) -> str:
         data = self.data
         map_string = ''
         for row in data:
             for col in row:
-                map_string += col + '  '
-            map_string += '\n\n'
+                map_string += col
+            map_string += '\n\n\n'
         return map_string
+
+    def fill_map(self):
+        for i in range(self.width+1):
+            col = []
+            for j in range(self.height+1):
+                if j == 0 and i == 0:
+                    col.append(' \t')
+                elif j == 0:
+                    col.append(str(i-1) + '\t')
+                elif i == 0:
+                    col.append(str(j-1) + '\t')
+                else: 
+                    col.append('*\t')
+            self.data.append(col)
             
     def add_path(self, command) -> bool:
         if len(command) != 3:
@@ -68,6 +84,7 @@ class Robot_Map():
             return True
         else:
             self.locations.update({command[1]: (command[2], command[3])})
+            self.data[int(command[2])+1][int(command[3])+1] = 'L\t'
             print(f'Location {command[1]} created at ({command[2]}, {command[3]}).\n')
             return True
 
@@ -85,6 +102,12 @@ class Robot_Map():
             print('Invalid location.\n')
             return False
         else:
+            # check if robot already exists at that location
+            for k, v in self.robots.items():
+                if command[2] in v:
+                    print(f'Robot {k} already exists at {command[2]}.\n')
+                    return False
+            # update robots dict
             self.robots.update({command[1]: (command[2], command[3])})
             print(f'Robot {command[1]} has been created at {command[2]} and will move to {command[3]}.\n')
             return True

@@ -31,21 +31,21 @@ def login():
 
 def display_map():
     os.system('cls||clear')
-    print('MAP')
+    print('MAP\n')
     print(robot_map)
     input('press enter to exit')
     return
 
 def simulation():
     os.system('cls||clear')
-    print('SIMULATED MAP')
+    print('SIMULATED MAP\n')
     # TODO: draw the map after simulation
     input('press enter to exit')
     return
 
 def command_line():
     os.system('cls||clear')
-    print('COMMAND LINE')
+    print('COMMAND LINE\n')
     while True:
         command = input('Enter your system command:\n').split()
         if len(command) == 0:
@@ -83,7 +83,7 @@ def command_line():
 
 def command_list():
     os.system('cls||clear')
-    print('SYSTEM COMMANDS')
+    print('SYSTEM COMMANDS\n')
     print('''
 location <name> <x> <y> - Creates a new location named with the name "name" at (x, y) on the map
                           at the location (x, y). If the location already exists, the system does nothing. Locations
