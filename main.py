@@ -1,25 +1,34 @@
 #! python3
 # main.py - main driver program for the robot coordination system
-
 import os, time, map_data
+import matplotlib.pyplot as plt
 
 # users dictionary - username: password
 users = {'Ethan': 'Fischer', 'user': 'pass'}
 
 # create the map
 rows, cols = (15, 15)
-robot_map = map_data.Robot_Map(rows, cols) 
+fig, ax = plt.subplots(figsize=(8,8))
+ax.set_title('Robot-Coordination Map')
+ax.set_xlim(0, cols)
+ax.set_ylim(0, rows)
+robot_map = map_data.Robot_Map(rows, cols, fig, ax) 
 
+# prompts the user to login and welcomes them after they have provided correct credentials
 def login():
     os.system('cls||clear')
     print('LOG IN\n')
     while True:
+        # prompt user for credentials
         username = input('Enter username:   ')
         password = input('Enter password:   ')
+
+        # check if credentials are valid
         if username not in users.keys() or users.get(username) != password:
             print('Username or password is incorrect, try again.')
             continue
-        if users.get(username) == password:
+        elif users.get(username) == password:
+            # go to welcome screen
             os.system('cls||clear')
             print(f'Welcome, {username}')
             print('Going to home screen in... ')
@@ -28,7 +37,7 @@ def login():
                 time.sleep(1)
             break    
 
-
+# calls the draw_map() method for robot_map to display the pyplot map
 def display_map():
     os.system('cls||clear')
     print('MAP\n')
@@ -37,6 +46,7 @@ def display_map():
     input('press enter to exit')
     return
 
+# moves the robots to their destinations and displays the pyplot map
 def simulation():
     os.system('cls||clear')
     print('SIMULATED MAP\n')
@@ -44,14 +54,18 @@ def simulation():
     input('press enter to exit')
     return
 
+# prompts the user for input that allows them to modify the map
 def command_line():
     os.system('cls||clear')
     print('COMMAND LINE\n')
     while True:
+        # prompt user for their command and split the string into an array of arguments
         command = input('Enter your system command:\n').split()
         if len(command) == 0:
             print('You did not enter a command, try again.')
             continue
+
+        # match the first argument to a command
         match command[0]:
             case 'help':
                 command_list()
@@ -59,9 +73,12 @@ def command_line():
             case 'exit':
                 return
             case 'print':
+                # check if print command has a valid number of arguments
                 if len(command) != 2:
                     print('Invalid Number of Arguments, use "help" for more info.\n')
                     continue
+
+                # match second argument to printable list
                 match command[1]:
                     case 'locations':
                         robot_map.print_locations()
@@ -84,6 +101,7 @@ def command_line():
             case _:
                 print('Invalid Command, use "help" for more info.\n')
 
+# prints a list of the system commands available to the user for map modification
 def command_list():
     os.system('cls||clear')
     print('SYSTEM COMMANDS\n')
@@ -112,19 +130,24 @@ help - Prints out the command list.
     input('press enter to exit')
     return
 
+# driver method, calls login and acts as the main menu for the software system
 def main():
     # login()
     
     while True:
         os.system('cls||clear')
-        print('MAIN MENU\n')
-        print('1 - Display Map')
-        print('2 - Run Simulation')
-        print('3 - System Command Line')
-        print('4 - System Command List')
-        print('5 - Quit\n')
-        print('What would you like to do?')
-        choice = input()
+        print('''MAIN MENU
+
+1 - Display Map
+2 - Run Simulation
+3 - System Command Line
+4 - System command List
+5 - Quit\n''')
+
+        # prompt user for their menu selection
+        choice = input('What would you like to do?\n')
+
+        # match choice to menu option
         match choice:
             case '1': 
                 display_map()
