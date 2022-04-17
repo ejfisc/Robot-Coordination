@@ -32,12 +32,8 @@ def login():
 def display_map():
     os.system('cls||clear')
     print('MAP\n')
-    print(robot_map)
-    print('''
-MAP KEY
-_ - Blank space, there is no location here.
-X<num> - X represents a location, the number next to it represents the number of robots currently at that location.
-    ''')
+    robot_map.print_robot_locations()
+    robot_map.draw_map()
     input('press enter to exit')
     return
 
@@ -117,7 +113,7 @@ help - Prints out the command list.
     return
 
 def main():
-    login()
+    # login()
     
     while True:
         os.system('cls||clear')

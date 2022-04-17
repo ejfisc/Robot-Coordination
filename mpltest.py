@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots(figsize=(8, 8))
-center = (7.5, 7.5)
 ax.set_xlim(0, 15)
 ax.set_ylim(0, 15)
 nw = ax.annotate("northwest", xy=(1, 14), xycoords='data',

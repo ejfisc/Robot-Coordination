@@ -1,5 +1,6 @@
 #! python3
 # robot_map.py - data class for robot map
+import matplotlib.pyplot as plt
 class Robot_Map():
 
     # robots dictionary - name: (start, end)
@@ -14,20 +15,37 @@ class Robot_Map():
     # robot-location relationship dictionary - location: [robots]
     robot_locations = {'nw': ['r1'], 'ne': [], 'se': [], 'sw': ['r2', 'r4'], 'center': [], 'test': [], 'test2': ['r3']}
 
+    # location annotation list
+    location_annotations = []
+
     def __init__(self, width, height) -> None:
         self.width = width
         self.height = height
-        self.data = []
+        # self.figure = plt.figure(0, figsize=(8,8))
+        # self.ax = self.figure.add_subplot()
+        # self.ax.set_title('Robot-Coordination Map')
+        # self.ax.set_xlim(0, width)
+        # self.ax.set_ylim(0, height)
+        # self.data = []
             
 
     def __str__(self) -> str:
-        self.fill_map()
-        map_string = ''
-        for row in self.data:
-            for col in row:
-                map_string += col
-            map_string += '\n\n\n'
-        return map_string
+        # self.fill_map()
+        # map_string = ''
+        # for row in self.data:
+        #     for col in row:
+        #         map_string += col
+        #     map_string += '\n\n\n'
+        # return map_string
+        pass
+
+    def draw_map(self) -> None:
+        fig = plt.figure(0, figsize=(8,8))
+        ax = fig.add_subplot()
+        ax.set_title('Robot-Coordination Map')
+        ax.set_xlim(0, self.width)
+        ax.set_ylim(0, self.height)
+        plt.show()
 
     def fill_map(self):
         data = []
@@ -92,12 +110,17 @@ class Robot_Map():
                             path[1] = command[1]
                     break
             self.locations.update({command[1]: (command[2], command[3])})
+            for ann in self.location_annotations:
+                if ann.xy == (int(command[2]), int(command[3])):
+                    ann.set_text(command[1])
             print(f'Location at ({command[2]}, {command[3]}) updated to {command[1]}.\n')
             return True
         else:
             self.locations.update({command[1]: (command[2], command[3])})
             self.robot_locations.update({command[1]: []})
-            self.data[int(command[2])][int(command[3])] = 'X0\t'
+            # self.data[int(command[2])][int(command[3])] = 'X0\t'
+            self.ax.annotate(command[1], xy=(int(command[2]), int(command[3])), xycoords='data', va="center", ha="center", bbox=dict(boxstyle="round", fc="w"))
+            # self.location_annotations.append(new_location)
             print(f'Location {command[1]} created at ({command[2]}, {command[3]}).\n')
             return True
 
