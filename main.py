@@ -4,11 +4,11 @@
 import os, time, map_data
 
 # users dictionary - username: password
-users = {'Ethan': 'Fischer', 'user': 'pass', 'logi': 'tech', 'test': 'python'}
+users = {'Ethan': 'Fischer', 'user': 'pass'}
 
 # create the map
 rows, cols = (15, 15)
-robot_map = map_data.Robot_Map(rows, cols)
+robot_map = map_data.Robot_Map(rows, cols) 
 
 def login():
     os.system('cls||clear')
@@ -33,6 +33,11 @@ def display_map():
     os.system('cls||clear')
     print('MAP\n')
     print(robot_map)
+    print('''
+MAP KEY
+_ - Blank space, there is no location here.
+X<num> - X represents a location, the number next to it represents the number of robots currently at that location.
+    ''')
     input('press enter to exit')
     return
 
@@ -68,6 +73,8 @@ def command_line():
                         robot_map.print_robots()
                     case 'paths':
                         robot_map.print_paths()
+                    case 'robot-locations':
+                        robot_map.print_robot_locations()
                     case _:
                         print(f'\n{command[1]} is not a valid list.\n')
             case 'location':
@@ -98,7 +105,8 @@ path <start> <end> - Creates a directed path from start location to end location
 robot <name> <start> <end> - Creates a robot with the name "name" and put it on the map at start
                              with the destination at end.
 
-print <list> - Prints the given list to the screen. <list> could be "locations" or "robots" or "paths"
+print <list> - Prints the given list to the screen. <list> could be "locations" or "robots" or "paths" or "robot-locations" which 
+               shows which robots are at which locations on the map.
 
 exit - Exits the system command line.
              
