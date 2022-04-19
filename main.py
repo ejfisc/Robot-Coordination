@@ -51,17 +51,18 @@ def display_map():
 # moves the robots to their destinations and displays the pyplot map
 def simulation():
     os.system('cls||clear')
-    print('SIMULATING ENVIRONMENT...\n')
-    for i in range(5, 2, -1):
+    print('MOVING THE ROBOTS...\n')
+    for i in range(3, 0 , -1):
         print(f'\r{i}', end='')
         time.sleep(1)
     os.system('cls||clear')
-    print('MOVING THE ROBOTS...\n')
-    for i in range(2, 0 , -1):
-        print(f'\r{i}', end='')
-        time.sleep(1)
+    print('MAP\n')
     robot_map.move_robots()
-    display_map()
+    robot_map.print_robot_locations()
+    robot_map.print_paths()
+    robot_map.draw_map()
+    input('\npress enter to exit')
+    return
 
 # prompts the user for input that allows them to modify the map
 def command_line():
@@ -128,7 +129,7 @@ remove <start> <end> ........... Removes the given path, if it exists.
 path <start> <end> ............. Creates a directed path from start location to end location, if both locations exist. Paths are required for
                                  travel between locations. Robots cannot teleport.
              
-robot <name> <start> <end> ..... Creates a robot with the name "name" and put it on the map at the start location
+robot <name> <start> <end> ..... Creates a robot with the name "name" and puts it on the map at the start location
                                  with the destination at the end location. If a path between these locations doesn't already exist,
                                  the system will automatically create one.
 

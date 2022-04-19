@@ -39,12 +39,17 @@ class Robot_Map():
                 if robot in robots:
                     current_location = location
                     break
-        
+
             # compare the robot's current location with its destination
             if current_location != path[1]:
-                # move the robot
-                self.robot_locations.get(current_location).remove(robot)
-                self.robot_locations.get(path[1]).append(robot)
+                # check for a path to travel on
+                if (current_location, path[1]) in self.paths:
+                    # move the robot
+                    self.robot_locations.get(current_location).remove(robot)
+                    self.robot_locations.get(path[1]).append(robot)
+                else:
+                    # robot cannot travel to destination
+                    print(f'Could not move {robot} because there is no path between {current_location} and {path[1]} for it to travel on.')
                 
     # handles mouse click events on the map, when the user clicks on a location, a box pops up displaying the robots at that location
     def on_click(self, event) -> None:
