@@ -30,6 +30,22 @@ class Robot_Map():
     def draw_map(self) -> None:
         plt.show(block=False)
 
+    def move_robots(self) -> None:
+        # loop through the robots dictionary
+        for robot, path in self.robots.items():
+            # get the robot's current location
+            current_location = ''
+            for location, robots in self.robot_locations.items():
+                if robot in robots:
+                    current_location = location
+                    break
+        
+            # compare the robot's current location with its destination
+            if current_location != path[1]:
+                # move the robot
+                self.robot_locations.get(current_location).remove(robot)
+                self.robot_locations.get(path[1]).append(robot)
+                
     # handles mouse click events on the map, when the user clicks on a location, a box pops up displaying the robots at that location
     def on_click(self, event) -> None:
         # get the click coordinates
@@ -41,17 +57,17 @@ class Robot_Map():
         if event.xdata is None or event.ydata is None:
             return
 
+        # check for pre existing robot list annotation to remove
+        for robot_list in temp_robots:
+            if self.inside_bubble(click_coords, robot_list.xy):
+                robot_list.remove()
+                self.robot_annotations.remove(robot_list)
+                plt.draw()
+                return
+        
         # loop through each location annotation to find the location clicked on
         for ann in temp_locations:
             if self.inside_bubble(click_coords, ann.xy):
-                # check for pre existing robot list annotation to remove
-                for robot_list in temp_robots:
-                    if self.inside_bubble(click_coords, ann.xy):
-                        robot_list.remove()
-                        self.robot_annotations.remove(robot_list)
-                        plt.draw()
-                        return
-
                 # get the list of robots at that location
                 robots = ', '.join(self.robot_locations.get(ann._text))
 
@@ -195,6 +211,43 @@ class Robot_Map():
             # print result and return
             print(f'Robot {command[1]} has been created at {command[2]} and will move to {command[3]}.\n')
             return True
+
+    def change_destination(self, command) -> bool:
+        # check arguments
+        if len(command) != 3:
+            print('Invalid Number of Arguments, use "help" for more info.\n')
+            return False
+
+        # check for invalid robot
+        if command[1] not in self.robots:
+            print(f'{command[1]} is not a robot on this map.\n')
+            return False
+
+        # check for invalid location
+        if command[2] not in self.locations:
+            print(f'{command[2]} is not a location on this map.\n')
+            return False
+    
+        # get the robot's current location
+        current_location = ''
+        for location, robots in self.robot_locations.items():
+            if command[1] in robots:
+                current_location = location
+                break
+
+        temp_path = (current_location, command[2])
+
+        # modify the robot's destination
+        self.robots.update({command[1]: temp_path})
+
+        # print result
+        print(f'Destination for {command[1]} has been updated to {command[2]}.\n')
+
+        # check if a path between its current location and new destination exists. If not, create one.
+        if temp_path not in self.paths:
+            self.add_path(['path', current_location, command[2]])
+
+        return True
 
     # removes an element from the map, return True if element was succesfully removed, False otherwise
     def remove_element(self, command) -> bool:

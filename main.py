@@ -43,17 +43,25 @@ def display_map():
     os.system('cls||clear')
     print('MAP\n')
     robot_map.print_robot_locations()
+    robot_map.print_paths()
     robot_map.draw_map()
-    input('press enter to exit')
+    input('\npress enter to exit')
     return
 
 # moves the robots to their destinations and displays the pyplot map
 def simulation():
     os.system('cls||clear')
-    print('SIMULATED MAP\n')
-    # TODO: draw the map after simulation
-    input('press enter to exit')
-    return
+    print('SIMULATING ENVIRONMENT...\n')
+    for i in range(5, 2, -1):
+        print(f'\r{i}', end='')
+        time.sleep(1)
+    os.system('cls||clear')
+    print('MOVING THE ROBOTS...\n')
+    for i in range(2, 0 , -1):
+        print(f'\r{i}', end='')
+        time.sleep(1)
+    robot_map.move_robots()
+    display_map()
 
 # prompts the user for input that allows them to modify the map
 def command_line():
@@ -95,6 +103,8 @@ def command_line():
                 robot_map.add_location(command)
             case 'robot':
                 robot_map.add_robot(command)
+            case 'move':
+                robot_map.change_destination(command)
             case 'path':
                 robot_map.add_path(command)
             case 'remove':
@@ -107,25 +117,31 @@ def command_list():
     os.system('cls||clear')
     print('SYSTEM COMMANDS\n')
     print('''
-location <name> <x> <y> - Creates a new location named with the name "name" at (x, y) on the map
-                          at the location (x, y). If the location already exists, the system does nothing. Locations
-                          and robots cannot have the same names. Coordinates must be in whole integers.
+location <name> <x> <y> ........ Creates a new location named with the name "name" at (x, y) on the map
+                                 at the location (x, y). If the location already exists, the system does nothing. Locations
+                                 and robots cannot have the same names. Coordinates must be in whole integers.
 
-remove <name> - Removes the given robot or location, if it exists.
+remove <name> .................. Removes the given robot or location, if it exists.
              
-remove <start> <end> - Removes the given path, if it exists.
+remove <start> <end> ........... Removes the given path, if it exists.
              
-path <start> <end> - Creates a directed path from start location to end location, if both locations exist.
+path <start> <end> ............. Creates a directed path from start location to end location, if both locations exist. Paths are required for
+                                 travel between locations. Robots cannot teleport.
              
-robot <name> <start> <end> - Creates a robot with the name "name" and put it on the map at start
-                             with the destination at end.
+robot <name> <start> <end> ..... Creates a robot with the name "name" and put it on the map at the start location
+                                 with the destination at the end location. If a path between these locations doesn't already exist,
+                                 the system will automatically create one.
 
-print <list> - Prints the given list to the screen. <list> could be "locations" or "robots" or "paths" or "robot-locations" which 
-               shows which robots are at which locations on the map.
+print <list> ................... Prints the given list to the screen. <list> could be "locations" or "robots" or "paths" or "robot-locations" which 
+                                 shows which robots are at which locations on the map.
 
-exit - Exits the system command line.
+move <robot> <location> ........ Modifies the given robot's destination to the given location so that the next time you run the simulation,
+                                 that robot will move to the given location. If there is no path between the robot's current location and its
+                                 destination, the system will automaticaly create one.
+
+exit ........................... Exits the system command line.
              
-help - Prints out the command list.
+help ........................... Prints out the command list.
 
 ''')
     input('press enter to exit')
@@ -133,7 +149,7 @@ help - Prints out the command list.
 
 # driver method, calls login and acts as the main menu for the software system
 def main():
-    # login()
+    login()
     
     while True:
         os.system('cls||clear')
