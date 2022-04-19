@@ -108,7 +108,7 @@ def command_list():
     print('''
 location <name> <x> <y> - Creates a new location named with the name "name" at (x, y) on the map
                           at the location (x, y). If the location already exists, the system does nothing. Locations
-                          and robots cannot have the same names.
+                          and robots cannot have the same names. Coordinates must be in whole integers.
 
 remove <name> - Removes the given robot or location, if it exists.
              

@@ -5,19 +5,14 @@ class Robot_Map():
 
     # robots dictionary - name: (start, end)
     robots = {}
-
     # locations dictionary - name: (x, y)
-    locations = {}
-
-    # paths dictionary - (start, end)
+    locations = {} 
+    # paths list - (start, end)
     paths = []
-
     # robot-location relationship dictionary - location: [robots]
     robot_locations = {}
-
     # location annotation list
     location_annotations = []
-
     # path annotation list
     path_annotations = []
 
@@ -182,7 +177,8 @@ class Robot_Map():
                 self.robots.pop(command[1])
 
                 # remove any instances of the robot in robot_locations
-                for robots in self.robot_locations.values():
+                temp_list = self.robot_locations.values().copy()
+                for robots in temp_list:
                     if command[1] in robots:
                         robots.remove(command[1])
                 
@@ -194,9 +190,10 @@ class Robot_Map():
             # check if element is a location
             if command[1] in self.locations:
                 # first remove any path annotations that this location is in
-                for ann in self.path_annotations:
-                    location = self.locations.get(command[1])
-                    coords = (int(location[0]), int(location[1]))
+                location = self.locations.get(command[1])
+                coords = (int(location[0]), int(location[1]))
+                temp_list = self.path_annotations.copy()
+                for ann in temp_list:
                     if ann.xyann == coords or ann.xy == coords:
                         self.path_annotations.remove(ann)
                         ann.remove()
@@ -206,23 +203,23 @@ class Robot_Map():
                 self.locations.pop(command[1])
 
                 # remove location from location annotations
-                for ann in self.location_annotations:
+                temp_list = self.location_annotations.copy()
+                for ann in temp_list:
                     if ann._text == command[1]:
                         self.location_annotations.remove(ann)
                         ann.remove()
                         plt.draw()
                 
-                # remove any instances of the location in robot_locations
-                for location in self.robot_locations.keys():
-                    if command[1] == location:
-                        self.robot_locations.pop(location)
+                # remove the location from robot_locations
+                self.robot_locations.pop(command[1])
                 
                 # print result and list of remaining locations
                 print(f'Location {command[1]} successfully removed.\n')
                 self.print_locations()
 
                 # remove any instances of the location in paths
-                for path in self.paths:
+                temp_list = self.paths.copy()
+                for path in temp_list:
                     if command[1] in path:
                         self.paths.remove(path)
                         print(f'The path ({path[0]}, {path[1]}) which contains {command[1]} has been removed.')
@@ -243,11 +240,12 @@ class Robot_Map():
                 return False
             else:
                 # remove path from path annotations and redraw map
-                for ann in self.path_annotations:
-                    start = self.locations.get(command[1])
-                    end = self.locations.get(command[2])
-                    start_coords = (int(start[0]), int(start[1]))
-                    end_coords = (int(end[0]), int(end[1]))
+                temp_list = self.path_annotations.copy()
+                start = self.locations.get(command[1])
+                end = self.locations.get(command[2])
+                start_coords = (int(start[0]), int(start[1]))
+                end_coords = (int(end[0]), int(end[1]))
+                for ann in temp_list:
                     if ann.xyann == start_coords and ann.xy == end_coords:
                         self.path_annotations.remove(ann)
                         ann.remove()
@@ -263,7 +261,7 @@ class Robot_Map():
 
     # prints a list of the locations
     def print_locations(self) -> None:
-        print('\nLocations:')
+        print('Locations:')
         for k, v in self.locations.items():
            print(f'{k}: ({v[0]}, {v[1]})')
         print()
@@ -277,14 +275,14 @@ class Robot_Map():
 
     # prints a list of the paths
     def print_paths(self) -> None:
-        print('\nPaths:')
+        print('Paths:')
         for path in self.paths:
             print(f'({path[0]} -> {path[1]})')
         print()
 
     # prints a list of the locations and which robots are at each location
     def print_robot_locations(self) -> None:
-        print('\nRobot-Locations:')
+        print('Robot-Locations:')
         for k, v in self.robot_locations.items():
                 print(f'{k}: ', end='')
                 print(*v, sep=', ')
