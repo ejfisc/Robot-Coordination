@@ -1,6 +1,7 @@
 #! python3
 # robot_map.py - data class for robot map
 import matplotlib.pyplot as plt
+from matplotlib.backend_bases import MouseButton
 class Robot_Map():
 
     # robots dictionary - name: (start, end)
@@ -15,6 +16,8 @@ class Robot_Map():
     location_annotations = []
     # path annotation list
     path_annotations = []
+    # robot annotations list
+    robot_annotations = []
 
     # constructor
     def __init__(self, width, height, fig, ax) -> None:
@@ -26,6 +29,37 @@ class Robot_Map():
     # displays the map in a pyplot window
     def draw_map(self) -> None:
         plt.show(block=False)
+
+    # handles mouse click events on the map, when the user clicks on a location, a box pops up displaying the robots at that location
+    def on_click(self, event) -> None:
+        # get the click coordinates
+        click_coords = (event.xdata, event.ydata)
+        temp_locations = self.location_annotations.copy()
+        temp_robots = self.robot_annotations.copy()
+
+        # do nothing and return if click was outside of figure
+        if event.xdata is None or event.ydata is None:
+            return
+
+        # loop through each location annotation to find the location clicked on
+        for ann in temp_locations:
+            if self.inside_bubble(click_coords, ann.xy):
+                # check for pre existing robot list annotation to remove
+                for robot_list in temp_robots:
+                    if self.inside_bubble(click_coords, ann.xy):
+                        robot_list.remove()
+                        self.robot_annotations.remove(robot_list)
+                        plt.draw()
+                        return
+
+                # get the list of robots at that location
+                robots = ', '.join(self.robot_locations.get(ann._text))
+
+                # display the robots
+                new_robot_list = self.ax.annotate(robots, xy=click_coords, xycoords='data', va="center", ha="center", bbox=dict(boxstyle="round", fc="w"))
+                self.robot_annotations.append(new_robot_list)
+                plt.draw()
+                return
             
     # adds a path to the map, returns True if a path was succesfully added, False otherwise
     def add_path(self, command) -> bool:
@@ -261,7 +295,7 @@ class Robot_Map():
 
     # prints a list of the locations
     def print_locations(self) -> None:
-        print('Locations:')
+        print('\nLocations:')
         for k, v in self.locations.items():
            print(f'{k}: ({v[0]}, {v[1]})')
         print()
@@ -275,15 +309,29 @@ class Robot_Map():
 
     # prints a list of the paths
     def print_paths(self) -> None:
-        print('Paths:')
+        print('\nPaths:')
         for path in self.paths:
             print(f'({path[0]} -> {path[1]})')
         print()
 
     # prints a list of the locations and which robots are at each location
     def print_robot_locations(self) -> None:
-        print('Robot-Locations:')
+        print('\nRobot-Locations:')
         for k, v in self.robot_locations.items():
                 print(f'{k}: ', end='')
                 print(*v, sep=', ')
         print()
+
+    # returns True if mouse click coordinates are within the boundaries of the location coordinates
+    def inside_bubble(self, click_coords, location_coords) -> bool:
+        clickx, clicky = click_coords[0], click_coords[1]
+        locationx, locationy = location_coords[0], location_coords[1]
+        # check x coordinates
+        if clickx < (locationx-0.6) or clickx > (locationx+0.6):
+            return False
+        # check y coordinates
+        if clicky < (locationy-0.4) or clicky > (locationy+0.4):
+            return False
+        # click is within 1 point of the location coordinates
+        return True
+        

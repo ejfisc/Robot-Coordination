@@ -13,6 +13,7 @@ ax.set_title('Robot-Coordination Map')
 ax.set_xlim(0, cols)
 ax.set_ylim(0, rows)
 robot_map = map_data.Robot_Map(rows, cols, fig, ax) 
+plt.connect('button_press_event', robot_map.on_click)
 
 # prompts the user to login and welcomes them after they have provided correct credentials
 def login():
