@@ -43,7 +43,7 @@ class Robot_Map():
             # compare the robot's current location with its destination
             if current_location != path[1]:
                 # check for a path to travel on
-                if (current_location, path[1]) in self.paths:
+                if [current_location, path[1]] in self.paths:
                     # move the robot
                     self.robot_locations.get(current_location).remove(robot)
                     self.robot_locations.get(path[1]).append(robot)
@@ -96,12 +96,12 @@ class Robot_Map():
         elif command[2] not in self.locations:
             print(f'{command[2]} is not a location on this map.\n')
             return False
-        elif (command[1], command[2]) in self.paths:
-            print(f'The path ({command[1]}, {command[2]}) already exists.\n')
+        elif [command[1], command[2]] in self.paths:
+            print(f'The path ({command[1]} -> {command[2]}) already exists.\n')
             return False
         else:
             # add path to paths list
-            self.paths.append((command[1], command[2]))
+            self.paths.append([command[1], command[2]])
 
             # create a new annotation for path and add it to path annotation list
             start = self.locations.get(command[1])
@@ -141,19 +141,35 @@ class Robot_Map():
 
         # check if location already exists at those coordinates
         if (command[2], command[3]) in self.locations.values():
+            current_location = None
             for k, v in self.locations.items():
-                # update each path with that location
                 if v == (command[2], command[3]):
-                    self.locations.pop(k)
+                    # set current location
+                    current_location = k
+                    # update robot_locations
+                    robots = self.robot_locations.get(k)
+                    self.robot_locations.update({command[1]: robots})
+                    self.robot_locations.pop(k)
+
+                    # update each path with that location
                     for path in self.paths:
                         if k == path[0]:
                             path[0] = command[1]
                         elif k == path[1]:
                             path[1] = command[1]
+
+                    # remove location from locations and break out of loop
+                    self.locations.pop(k)
                     break
-                
+
             # update locations dictionary
             self.locations.update({command[1]: (command[2], command[3])})
+            print(f'Location at ({command[2]}, {command[3]}) updated to {command[1]}.\n')
+
+            # update robots with a destination of the old location
+            for robot, path in self.robots.items():
+                if k in path:
+                    self.change_destination(['move', robot, command[1]])
 
             # update location_annotations list and redraw the map
             for ann in self.location_annotations:
@@ -161,8 +177,6 @@ class Robot_Map():
                     ann.set_text(command[1])
                     plt.draw()
             
-            # print result and return
-            print(f'Location at ({command[2]}, {command[3]}) updated to {command[1]}.\n')
             return True
         else:
             # update locations dictionary
@@ -199,7 +213,7 @@ class Robot_Map():
             return False
         
         # create new path for robot to travel on if it doesn't already exist
-        if (command[2], command[3]) not in self.paths:
+        if [command[2], command[3]] not in self.paths:
             # call add_path with path command to create a new path, update robots dictionary and add robot to location
             self.add_path(['path', command[2], command[3]])
             self.robots.update({command[1]: (command[2], command[3])})
@@ -240,7 +254,7 @@ class Robot_Map():
                 current_location = location
                 break
 
-        temp_path = (current_location, command[2])
+        temp_path = [current_location, command[2]]
 
         # modify the robot's destination
         self.robots.update({command[1]: temp_path})
@@ -314,7 +328,7 @@ class Robot_Map():
                 for path in temp_list:
                     if command[1] in path:
                         self.paths.remove(path)
-                        print(f'The path ({path[0]}, {path[1]}) which contains {command[1]} has been removed.')
+                        print(f'The path ({path[0]} -> {path[1]}) which contains {command[1]} has been removed.')
                 print()
                 return True
             else:
@@ -344,10 +358,10 @@ class Robot_Map():
                         plt.draw()
                 
                 # remove path from paths list
-                self.paths.remove((command[1], command[2]))
+                self.paths.remove([command[1], command[2]])
 
                 # print result, list of remaining paths, and return
-                print(f'Path ({command[1]}, {command[2]}) successfully removed.\n')
+                print(f'Path ({command[1]} -> {command[2]}) successfully removed.\n')
                 self.print_paths()
                 return True
 

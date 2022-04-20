@@ -71,6 +71,7 @@ def command_line():
     while True:
         # prompt user for their command and split the string into an array of arguments
         command = input('Enter your system command:\n').split()
+        print()
         if len(command) == 0:
             print('You did not enter a command, try again.')
             continue
@@ -120,7 +121,8 @@ def command_list():
     print('''
 location <name> <x> <y> ........ Creates a new location named with the name "name" at (x, y) on the map
                                  at the location (x, y). If the location already exists, the system does nothing. Locations
-                                 and robots cannot have the same names. Coordinates must be in whole integers.
+                                 and robots cannot have the same names. Coordinates must be in whole integers. If a location
+                                 already exists at those coordinates, the name of the path will be updated in the system.
 
 remove <name> .................. Removes the given robot or location, if it exists.
              
