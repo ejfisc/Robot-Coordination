@@ -283,8 +283,7 @@ class Robot_Map():
                 self.robots.pop(command[1])
 
                 # remove any instances of the robot in robot_locations
-                temp_list = self.robot_locations.values().copy()
-                for robots in temp_list:
+                for robots in self.robot_locations.values():
                     if command[1] in robots:
                         robots.remove(command[1])
                 
